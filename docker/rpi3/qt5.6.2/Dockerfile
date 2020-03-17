@@ -6,12 +6,16 @@ RUN apt-get update -q && apt-get install -yq --no-install-recommends \
     build-essential \
     ca-certificates \
     curl \
+    g++ \
+    gdb-multiarch \
     git \
+    qemu-user-static \
     unzip \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone Qtrpi and additional scripts
-RUN git clone https://github.com/rose-a/qtrpi.git -b docker-compatibility
+RUN git clone https://github.com/rose-a/qtrpi.git -b fix-docker-image
 
 # Setup Qtrpi environment
 ENV QTRPI_QT_VERSION='5.6.2' \

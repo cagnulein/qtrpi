@@ -29,14 +29,14 @@ function device_name() {
 }
 
 validate_var_qtrpi_qt_version() {
-    for VERSION in '5.6.2' '5.7.0'; do
+    for VERSION in '5.6.2' '5.7.0' '5.12.7'; do
         if [[ "$QTRPI_QT_VERSION" == "$VERSION" ]]; then
             VALID=true
         fi
     done
 
     if [[ ! $VALID ]]; then
-        exit_error "Invalid QTRPI_QT_VERSION value ($QTRPI_QT_VERSION). Supported values: \n- 5.6.2 \n- 5.7.0"
+        exit_error "Invalid QTRPI_QT_VERSION value ($QTRPI_QT_VERSION). Supported values: \n- 5.6.2 \n- 5.7.0 \n- 5.12.7"
     fi
 }
 
@@ -115,7 +115,7 @@ function clean_git_and_compilation() {
 
 function qmake_cmd() {
     LOG_FILE=${1:-'default'}
-    $ROOT/raspi/qt5/bin/qmake -r |& tee $ROOT/logs/$LOG_FILE.log
+    $ROOT/raspi/qt5/bin/qmake |& tee $ROOT/logs/$LOG_FILE.log
 }
 
 function make_cmd() {
