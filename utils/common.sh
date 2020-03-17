@@ -23,6 +23,7 @@ function device_name() {
     case $1 in
         'linux-rasp-pi-g++') NAME='rpi1' ;;
         'linux-rasp-pi2-g++') NAME='rpi2' ;;
+        'linux-rasp-pi3-g++') NAME='rpi3' ;;
         'linux-rpi3-g++') NAME='rpi3' ;;
     esac
     echo $NAME
