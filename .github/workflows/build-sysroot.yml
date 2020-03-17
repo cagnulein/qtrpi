@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: apt-get update -q && apt-get install -yq --no-install-recommends build-essential g++ gdb-multiarch qemu-user-static
+      run: sudo apt-get update -q && apt-get install -yq --no-install-recommends build-essential g++ gdb-multiarch qemu-user-static
     - name: Initialize directory structure
       run: ./utils/init-common.sh
     - name: Download Raspbian image
