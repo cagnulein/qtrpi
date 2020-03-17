@@ -1,16 +1,14 @@
-name: Build Sysroot
+name: Build QtRpi binaries
 
 on: push
 
 jobs:
-  build:
+  prepare-sysroot:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Install dependencies
-      run: sudo apt-get update -q && sudo apt-get install -yq --no-install-recommends build-essential gdb-multiarch qemu-user-static
     - name: Initialize directory structure
       run: ./utils/init-common.sh
     - name: Download Raspbian image
@@ -19,10 +17,37 @@ jobs:
       run: ./utils/prepare-sysroot-full.sh
     - name: Create minimal sysroot variant
       run: ./utils/prepare-sysroot-minimal.sh
-    - name: Zip minimal sysroot
-      run: zip -r ./sysroot-minimal.zip /opt/qtrpi/raspbian/sysroot-minimal
+    # - name: Zip minimal sysroot
+    #   run: zip -r ./sysroot-minimal.zip /opt/qtrpi/raspbian/sysroot-minimal
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with: 
         name: sysroot-minimal
-        path: ./sysroot-minimal.zip
+        path: /opt/qtrpi/raspbian/sysroot-minimal
+
+  build-qtrpi:
+    runs-on: ubuntu-latest
+    needs: prepare-sysroot
+    env:
+      QTRPI_QT_VERSION: '5.12.7'
+      QTRPI_TARGET_DEVICE: linux-rasp-pi3-g++
+      QTRPI_TARGET_HOST: pi@localhost
+    steps:
+    - name: Install dependencies
+      run: sudo apt-get update -q && sudo apt-get install -yq --no-install-recommends build-essential gdb-multiarch qemu-user-static
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Initialize directory structure
+      run: ./utils/init-common.sh
+    - uses: actions/download-artifact@v1
+      with:
+        name: sysroot-minimal
+        path: /opt/qtrpi/raspbian/sysroot-minimal
+    - name: Create symlink for sysroot
+      run: ./utils/switch-sysroot.sh minimal
+    - name: Download Toolchain
+      run: ./utils/synchronize-toolchain.sh
+    - name: Download Qt sources
+      run: ./utils/synchronize-qt-modules.sh
+    - name: Crosscompile Qt
+      run: ./utils/compile-qt-modules.sh --clean-output --clean-modules-repo
