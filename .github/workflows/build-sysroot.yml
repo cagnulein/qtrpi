@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
     - name: Install dependencies
       run: sudo apt-get update -q && sudo apt-get install -yq --no-install-recommends build-essential gdb-multiarch qemu-user-static
     - name: Initialize directory structure
@@ -18,8 +19,8 @@ jobs:
       run: ./utils/prepare-sysroot-full.sh
     - name: Create minimal sysroot variant
       run: ./utils/prepare-sysroot-minimal.sh
-    - name: Zip full sysroot
-      run: zip ./sysroot-minimal.zip /opt/qtrpi/raspbian/sysroot-minimal/
+    - name: Zip minimal sysroot
+      run: zip -r ./sysroot-minimal.zip /opt/qtrpi/raspbian/sysroot-minimal
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with: 
