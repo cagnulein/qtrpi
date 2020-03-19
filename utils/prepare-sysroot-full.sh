@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ${0%/*}/common.sh
+
 cd_root ; 
 
 mkdir -p raspbian ; cd raspbian
@@ -38,7 +39,7 @@ sudo sed -i '/deb-src/s/^#//g' sysroot-full/etc/apt/sources.list
 sudo chroot sysroot-full /bin/bash -c 'apt-get update'
 sudo chroot sysroot-full /bin/bash -c 'apt-get install -y apt-transport-https'
 sudo chroot sysroot-full /bin/bash -c 'apt-get build-dep -y qt4-x11 libqt5gui'
-sudo chroot sysroot-full /bin/bash -c 'apt-get install -y libudev-dev libinput-dev libts-dev libxcb-xinerama0-dev libxcb-xinerama0 libraspberrypi-dev'
+sudo PACKAGES="$SYSROOT_DEPENDENCIES" chroot sysroot-full /bin/bash -c 'apt-get install -y $PACKAGES'
 
 sudo umount sysroot-full/sys
 sudo umount sysroot-full/dev

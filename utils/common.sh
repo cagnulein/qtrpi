@@ -99,6 +99,8 @@ fi
 
 # exclude new lines from array
 readarray -t QT_MODULES < $(realpath $UTILS_DIR/../)/qt-modules.txt
+SYSROOT_DEPS_FILE=$(realpath $UTILS_DIR/../)/sysroot-dependencies.txt
+SYSROOT_DEPENDENCIES=$(tr '\n' ' ' < $SYSROOT_DEPS_FILE)
 
 function cd_root() {
     if [[ ! -d $ROOT ]]; then
