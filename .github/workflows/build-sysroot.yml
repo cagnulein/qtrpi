@@ -17,13 +17,14 @@ jobs:
       run: ./utils/prepare-sysroot-full.sh
     - name: Create minimal sysroot variant
       run: ./utils/prepare-sysroot-minimal.sh
-    - name: Zip minimal sysroot
-      run: zip -r ./sysroot-minimal.zip /opt/qtrpi/raspbian/sysroot-minimal
+    - name: Pack minimal sysroot
+      # run: zip -r ./sysroot-minimal.zip /opt/qtrpi/raspbian/sysroot-minimal
+      run: tar -czf sysroot-minimal.tar.gz /opt/qtrpi/raspbian/sysroot-minimal/ 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with: 
         name: sysroot-minimal
-        path: ./sysroot-minimal.zip
+        path: ./sysroot-minimal.tar.gz
 
   build-qtrpi:
     runs-on: ubuntu-latest
@@ -44,8 +45,9 @@ jobs:
       with:
         name: sysroot-minimal
         path: ./
-    - name: Unzip sysroot
-      run: unzip -o ./sysroot-minimal.zip
+    - name: Unpack sysroot
+      # run: unzip -o ./sysroot-minimal.zip & ls -la
+      run: tar -xzf sysroot-minimal.tar.gz -C / 
     - name: Create symlink for sysroot
       run: ./utils/switch-sysroot.sh minimal
     - name: Download Toolchain
