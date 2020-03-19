@@ -5,6 +5,8 @@ OUTPUT_DIR=$ROOT/raspi/qt5pi
 
 check_env_vars
 
+validate_var_qtrpi_target_host
+
 cd_root
 
 function usage() {
