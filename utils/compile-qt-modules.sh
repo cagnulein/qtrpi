@@ -62,7 +62,7 @@ function build_qtbase() {
         NO_USE_GOLD_LINKER='-no-use-gold-linker'
     fi
 
-    ./configure -release -opengl es2 -device $TARGET_DEVICE \
+    ./configure -release -v -opengl es2 -device $TARGET_DEVICE \
         -device-option CROSS_COMPILE=$CROSS_COMPILE \
         -sysroot $SYSROOT \
         -opensource -confirm-license -make libs \
