@@ -96,7 +96,7 @@ jobs:
         name: qtrpi_${QTRPI_TAG}
         path: ./
     - name: Build docker image
-      run: docker build . -t arose/
+      run: docker build . -t arose/qtrpi:${QTRPI_TAG}
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKER_ACCESSTOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
             
