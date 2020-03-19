@@ -46,8 +46,8 @@ Open a terminal and follow the steps below:
 ```bash
 git clone https://github.com/neuronalmotion/qtrpi.git
 cd qtrpi
-export QTRPI_QT_VERSION='5.7.0'
-export QTRPI_TARGET_DEVICE='linux-rpi3-g++'
+export QTRPI_QT_VERSION='5.12.7'
+export QTRPI_TARGET_DEVICE='rpi3'
 export QTRPI_TARGET_HOST='pi@192.168.1.12'
 ./init-qtrpi-minimal.sh
 ./deploy-qtrpi.sh --prepare-rpi
@@ -80,10 +80,11 @@ How to build a Raspberry Pi 3 application from your desktop Qt Creator (step by 
 
 ## Docker images
 
-The images are tagged according to their target configuration.
+Docker images can be found at https://hub.docker.com/repository/docker/arose/qtrpi.
 
-Currently the following tags are available:
+The images are tagged according to their target configuration i.e.:
 
+* `rpi1-qt5.12.7`: Crosscompile Qt 5.12.7 for the Raspbarry Pi 1/Zero
 * `rpi3-qt5.6.2`: Crosscompile Qt 5.6.2 for the Raspbarry Pi 3
 
 Choose the image which fits your needs.

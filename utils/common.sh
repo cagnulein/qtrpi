@@ -74,6 +74,13 @@ function target_device() {
                 DEVICE='linux-rasp-pi3-g++'                 
             fi
             ;;
+        'rpi4')
+            if [[ $(compare_version $2 '5.6.2') -lt 2 ]]; then
+                DEVICE='linux-rpi3-vc4-g++'
+            else
+                DEVICE='linux-rasp-pi3-vc4-g++'                 
+            fi
+            ;;
     esac
     echo $DEVICE
 }
@@ -99,6 +106,8 @@ validate_var_qtrpi_target_device() {
 }
 
 validate_var_qtrpi_target_host() {
+    : "${QTRPI_TARGET_HOST:?Invalid environment variable: please export QTRPI_TARGET_HOST.}"
+    
     TARGET_USER=$(echo $QTRPI_TARGET_HOST | cut -d@ -f1)
 
     if [[ "$TARGET_USER" == "$QTRPI_TARGET_HOST" ]] ; then
@@ -109,7 +118,6 @@ validate_var_qtrpi_target_host() {
 check_env_vars() {
     : "${QTRPI_QT_VERSION:?Invalid environment variable, please export QTRPI_QT_VERSION.}"
     : "${QTRPI_TARGET_DEVICE:?Invalid environment variable: please export QTRPI_TARGET_DEVICE.}"
-    : "${QTRPI_TARGET_HOST:?Invalid environment variable: please export QTRPI_TARGET_HOST.}"
 
     validate_var_qtrpi_target_device    
 }
@@ -122,6 +130,7 @@ TARGET_HOST=$QTRPI_TARGET_HOST
 RASPBIAN_BASENAME='raspbian_latest'
 
 QTRPI_TAG="${DEVICE_NAME}_qt-${QT_VERSION}"
+QTRPI_DOCKER_TAG="${DEVICE_NAME}-qt${QT_VERSION}"
 QTRPI_ZIP="qtrpi-${QTRPI_TAG}.zip"
 QTRPI_BASE_URL='http://www.qtrpi.com/downloads'
 QTRPI_SYSROOT_URL="$QTRPI_BASE_URL/sysroot/qtrpi-sysroot-minimal-latest.zip"

@@ -63,12 +63,12 @@ jobs:
     - name: Crosscompile Qt
       run: ./utils/compile-qt-modules.sh --clean-output --clean-modules-repo    
     - name: Pack Qt binaries
-      run: tar -czf qtrpi_${QTRPI_TAG}.tar.gz /opt/qtrpi/raspi/qt5/ /opt/qtrpi/raspi/qt5pi/ 
+      run: tar -czf qtrpi_$QTRPI_TAG.tar.gz /opt/qtrpi/raspi/qt5/ /opt/qtrpi/raspi/qt5pi/ 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: qtrpi_${QTRPI_TAG}
-        path: ./qtrpi_${QTRPI_TAG}.tar.gz
+        name: qtrpi_${{ env.QTRPI_TAG }}
+        path: ./qtrpi_${{ env.QTRPI_TAG }}.tar.gz
 
   build-docker:
     runs-on: ubuntu-latest
@@ -80,6 +80,7 @@ jobs:
     env:
       QTRPI_QT_VERSION: ${{ matrix.version }}
       QTRPI_TARGET_DEVICE: ${{ matrix.device }}
+      DOCKER_IMAGE: arose/qtrpi:${{ matrix.device }}-qt${{ matrix.version }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -93,10 +94,12 @@ jobs:
     - name: Download Qt binaries
       uses: actions/download-artifact@v1
       with:
-        name: qtrpi_${QTRPI_TAG}
+        name: qtrpi_${{ env.QTRPI_TAG }}
         path: ./
     - name: Build docker image
-      run: docker build . -t arose/qtrpi:${QTRPI_TAG}
+      run: docker build . -t ${DOCKER_IMAGE}
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKER_ACCESSTOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+    # - name: Push docker image
+    #   run: docker push ${DOCKER_IMAGE}
             
