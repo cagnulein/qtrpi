@@ -44,7 +44,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Set QtRpi Tag
-      run: './utils/set-github-environment.sh && echo "QtRpi Tag: ${QTRPI_TAG}"'
+      run: ./utils/set-github-environment.sh
     - name: Initialize directory structure
       run: ./utils/init-common.sh
     - name: Download sysroot
@@ -84,7 +84,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Set QtRpi Tag
-      run: './utils/set-github-environment.sh && echo "QtRpi Tag: ${QTRPI_TAG}"'
+      run: ./utils/set-github-environment.sh
     - name: Download sysroot
       uses: actions/download-artifact@v1
       with:
