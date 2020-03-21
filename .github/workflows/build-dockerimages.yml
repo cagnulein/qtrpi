@@ -100,6 +100,5 @@ jobs:
       run: docker build . --build-arg qt_version=${{ matrix.version }} --build-arg target_device=${{ matrix.device }} -t ${DOCKER_IMAGE}
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKER_ACCESSTOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-    # - name: Push docker image
-    #   run: docker push ${DOCKER_IMAGE}
-            
+    - name: Push docker image
+      run: docker push ${DOCKER_IMAGE}
