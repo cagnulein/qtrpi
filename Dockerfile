@@ -44,6 +44,7 @@ COPY utils/synchronize-toolchain.sh utils/
 RUN mkdir -p raspi raspbian bin logs && \
     ./utils/switch-sysroot.sh minimal && \
     ./utils/synchronize-toolchain.sh && \
+    ln -sf /opt/qtrpi/raspi/qt5/bin/qmake /opt/qtrpi/bin/qmake-qtrpi && \
     rm -rf /opt/qtrpi/raspi/tools/.git && \
     rm -rf /opt/qtrpi/raspi/tools/arm-bcm2708/arm-* && \
     rm -rf /opt/qtrpi/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian
