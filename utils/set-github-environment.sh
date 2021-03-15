@@ -2,4 +2,4 @@
 
 source ${0%/*}/common.sh
 
-echo "::set-env name=QTRPI_TAG::${QTRPI_TAG}"
+echo "QTRPI_TAG=${QTRPI_TAG}" >> $GITHUB_ENV
