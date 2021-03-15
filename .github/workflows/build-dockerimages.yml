@@ -1,6 +1,6 @@
 name: Build QtRpi Docker images
 
-on: push
+on: [push, workflow_dispatch]
 
 env:  
   QTRPI_TARGET_HOST: pi@localhost
