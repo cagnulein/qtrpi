@@ -1,0 +1,108 @@
+name: Build QtRpi Docker images
+
+on: 
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 5 * * 6'
+
+env:  
+  QTRPI_TARGET_HOST: pi@localhost
+
+jobs:
+  prepare-sysroot:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Initialize directory structure
+      run: ./utils/init-common.sh
+    - name: Download Raspbian image
+      run: ./utils/download-raspbian.sh
+    - name: Build sysroot
+      run: ./utils/prepare-sysroot-full.sh
+    - name: Create minimal sysroot variant
+      run: ./utils/prepare-sysroot-minimal.sh
+    - name: Pack minimal sysroot
+      run: tar -czf sysroot-minimal.tar.gz /opt/qtrpi/raspbian/sysroot-minimal/ 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v1
+      with: 
+        name: sysroot-minimal
+        path: ./sysroot-minimal.tar.gz
+
+  build-qtrpi:
+    runs-on: ubuntu-latest
+    needs: prepare-sysroot
+    strategy:
+      matrix:
+        device: [rpi1, rpi2, rpi3]
+        version: ['5.6.2', '5.9.9', '5.12.7']
+    env:
+      QTRPI_QT_VERSION: ${{ matrix.version }}
+      QTRPI_TARGET_DEVICE: ${{ matrix.device }}
+    steps:
+    - name: Install dependencies
+      run: sudo apt-get update -q && sudo apt-get install -yq --no-install-recommends build-essential gdb-multiarch qemu-user-static
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set QtRpi Tag
+      run: ./utils/set-github-environment.sh
+    - name: Initialize directory structure
+      run: ./utils/init-common.sh
+    - name: Download sysroot
+      uses: actions/download-artifact@v1
+      with:
+        name: sysroot-minimal
+        path: ./
+    - name: Unpack sysroot
+      run: tar -xzf sysroot-minimal.tar.gz -C / 
+    - name: Create symlink for sysroot
+      run: ./utils/switch-sysroot.sh minimal
+    - name: Download Toolchain
+      run: ./utils/synchronize-toolchain.sh
+    - name: Download Qt sources
+      run: ./utils/synchronize-qt-modules.sh
+    - name: Crosscompile Qt
+      run: ./utils/compile-qt-modules.sh --clean-output --clean-modules-repo    
+    - name: Pack Qt binaries
+      run: tar -czf qtrpi_$QTRPI_TAG.tar.gz /opt/qtrpi/raspi/qt5/ /opt/qtrpi/raspi/qt5pi/ 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: qtrpi_${{ env.QTRPI_TAG }}
+        path: ./qtrpi_${{ env.QTRPI_TAG }}.tar.gz
+
+  build-docker:
+    runs-on: ubuntu-latest
+    needs: build-qtrpi
+    strategy:
+      matrix:
+        device: [rpi1, rpi2, rpi3]
+        version: ['5.6.2', '5.9.9', '5.12.7']
+    env:
+      QTRPI_QT_VERSION: ${{ matrix.version }}
+      QTRPI_TARGET_DEVICE: ${{ matrix.device }}
+      DOCKER_IMAGE: arose/qtrpi:${{ matrix.device }}-qt${{ matrix.version }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set QtRpi Tag
+      run: ./utils/set-github-environment.sh
+    - name: Download sysroot
+      uses: actions/download-artifact@v1
+      with:
+        name: sysroot-minimal
+        path: ./
+    - name: Download Qt binaries
+      uses: actions/download-artifact@v1
+      with:
+        name: qtrpi_${{ env.QTRPI_TAG }}
+        path: ./
+    - name: Build docker image
+      run: docker build . --build-arg qt_version=${{ matrix.version }} --build-arg target_device=${{ matrix.device }} -t ${DOCKER_IMAGE}
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKER_ACCESSTOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+    - name: Push docker image
+      run: docker push ${DOCKER_IMAGE}

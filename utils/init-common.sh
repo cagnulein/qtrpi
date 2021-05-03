@@ -2,6 +2,8 @@
 
 source ${0%/*}/common.sh
 
+message "QtRpi Tag: ${QTRPI_TAG}, target-device: ${TARGET_DEVICE}"
+
 message 'Creating qtrpi directory structure'
 
 if [[ ! $DOCKER_BUILD ]]; then

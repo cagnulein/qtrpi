@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${0%/*}/utils/common.sh
+source ${0%/*}/common.sh
 
 # Run qmake
 message 'running qmake...'
