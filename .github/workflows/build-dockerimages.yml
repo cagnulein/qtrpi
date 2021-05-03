@@ -11,7 +11,7 @@ env:
 
 jobs:
   prepare-sysroot:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     
     steps:
     - name: Checkout repository
@@ -33,7 +33,7 @@ jobs:
         path: ./sysroot-minimal.tar.gz
 
   build-qtrpi:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: prepare-sysroot
     strategy:
       matrix:
@@ -75,7 +75,7 @@ jobs:
         path: ./qtrpi_${{ env.QTRPI_TAG }}.tar.gz
 
   build-docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: build-qtrpi
     strategy:
       matrix:
