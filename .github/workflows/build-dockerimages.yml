@@ -37,8 +37,10 @@ jobs:
     needs: prepare-sysroot
     strategy:
       matrix:
-        device: [rpi1, rpi2, rpi3]
-        version: ['5.6.2', '5.9.9', '5.12.7']
+#        device: [rpi1, rpi2, rpi3]
+#        version: ['5.6.2', '5.9.9', '5.12.7']
+        device: [rpi3]
+        version: ['5.12.7']
     env:
       QTRPI_QT_VERSION: ${{ matrix.version }}
       QTRPI_TARGET_DEVICE: ${{ matrix.device }}
@@ -79,8 +81,10 @@ jobs:
     needs: build-qtrpi
     strategy:
       matrix:
-        device: [rpi1, rpi2, rpi3]
-        version: ['5.6.2', '5.9.9', '5.12.7']
+#        device: [rpi1, rpi2, rpi3]
+#        version: ['5.6.2', '5.9.9', '5.12.7']
+        device: [rpi3]
+        version: ['5.12.7']
     env:
       QTRPI_QT_VERSION: ${{ matrix.version }}
       QTRPI_TARGET_DEVICE: ${{ matrix.device }}
