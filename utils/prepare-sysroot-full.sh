@@ -41,6 +41,10 @@ sudo chroot sysroot-full /bin/bash -c 'apt-get install -y apt-transport-https'
 sudo chroot sysroot-full /bin/bash -c 'apt-get build-dep -y qt4-x11 libqt5gui'
 sudo PACKAGES="$SYSROOT_DEPENDENCIES" chroot sysroot-full /bin/bash -c 'apt-get install -y $PACKAGES'
 
+# Install wiringpi
+sudo chroot sysroot-full /bin/bash -c 'wget https://project-downloads.drogon.net/wiringpi-latest.deb'
+sudo chroot sysroot-full /bin/bash -c 'sudo dpkg -i wiringpi-latest.deb'
+
 sudo umount sysroot-full/sys
 sudo umount sysroot-full/dev
 sudo umount sysroot-full/proc
